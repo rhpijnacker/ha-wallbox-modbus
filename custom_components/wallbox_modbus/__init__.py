@@ -18,6 +18,7 @@ from .coordinator import WallboxModbusDataUpdateCoordinator
 PLATFORMS: list[Platform] = [
     Platform.LOCK,
     Platform.NUMBER,
+    Platform.SELECT,
     Platform.SENSOR,
     # Platform.BINARY_SENSOR,
     Platform.SWITCH,

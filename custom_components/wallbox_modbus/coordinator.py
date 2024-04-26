@@ -39,7 +39,7 @@ class WallboxModbusDataUpdateCoordinator(DataUpdateCoordinator):
             hass=hass,
             logger=LOGGER,
             name=DOMAIN,
-            update_interval=timedelta(seconds=15),
+            update_interval=timedelta(seconds=5),
         )
 
     async def _async_update_data(self):

@@ -1,34 +1,38 @@
 """Switch platform for wallbox_modbus."""
 
-from __future__ import annotations
-
 from homeassistant.components.switch import SwitchEntity, SwitchEntityDescription
 
 from .const import DOMAIN
 from .entity import WallboxModbusEntity
 
-ENTITY_DESCRIPTIONS = (
-    SwitchEntityDescription(
-        key="is_auto_charging_discharging_enabled",
-        name="Automatically start (dis)charging",
-        icon="mdi:battery-charging",
-    ),
+AutoChargingSwitchEntityDescription = SwitchEntityDescription(
+    key="is_auto_charging_discharging_enabled",
+    name="Automatically start (dis)charging",
+    icon="mdi:battery-charging",
+)
+StartChargingSwitchEntityDescription = SwitchEntityDescription(
+    key="charge_discharge",
+    name="Start (dis)charging",
+    icon="mdi:battery-charging",
 )
 
 
 async def async_setup_entry(hass, entry, async_add_devices):
     """Set up the sensor platform."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
-    async_add_devices(
-        WallboxModbusSwitch(
+    async_add_devices([
+        WallboxModbusAutoChargingSwitch(
             coordinator=coordinator,
-            entity_description=entity_description,
-        )
-        for entity_description in ENTITY_DESCRIPTIONS
-    )
+            entity_description=AutoChargingSwitchEntityDescription,
+        ),
+        WallboxModbusChargeDischargeSwitch(
+            coordinator=coordinator,
+            entity_description=StartChargingSwitchEntityDescription
+        ),
+    ])
 
 
-class WallboxModbusSwitch(WallboxModbusEntity, SwitchEntity):
+class WallboxModbusAutoChargingSwitch(WallboxModbusEntity, SwitchEntity):
     """wallbox_modbus switch class."""
 
     @property
@@ -48,4 +52,24 @@ class WallboxModbusSwitch(WallboxModbusEntity, SwitchEntity):
     async def async_turn_off(self, **_: any) -> None:
         """Turn off the switch."""
         await self.coordinator.client.disable_auto_charging_discharging()
+        await self.coordinator.async_request_refresh()
+
+
+class WallboxModbusChargeDischargeSwitch(WallboxModbusEntity, SwitchEntity):
+    """wallbox_modbus switch class."""
+
+    @property
+    def available(self) -> bool:
+        return self.has_control()
+
+    @property
+    def is_on(self) -> bool:
+        return self.coordinator.data.get("action") == 1
+
+    async def async_turn_on(self, **_: any) -> None:
+        await self.coordinator.client.start_charging_discharging()
+        await self.coordinator.async_request_refresh()
+
+    async def async_turn_off(self, **_: any) -> None:
+        await self.coordinator.client.stop_charging_discharging()
         await self.coordinator.async_request_refresh()
