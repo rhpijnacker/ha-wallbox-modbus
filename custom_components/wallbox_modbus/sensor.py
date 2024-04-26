@@ -92,17 +92,6 @@ async def async_setup_entry(hass, entry, async_add_devices):
 class WallboxModbusSensor(WallboxModbusEntity, SensorEntity):
     """wallbox_modbus Sensor class."""
 
-    def __init__(
-        self,
-        coordinator: WallboxModbusDataUpdateCoordinator,
-        entity_description: SensorEntityDescription,
-    ) -> None:
-        """Initialize the sensor class."""
-        super().__init__(coordinator)
-        self.entity_description = entity_description
-        self._unique_id = f"{self._unique_id}-{self.entity_description.key}"
-        print('>', entity_description.key, self._unique_id)
-
     @property
     def native_value(self) -> str:
         """Return the native value of the sensor."""

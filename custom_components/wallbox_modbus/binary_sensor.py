@@ -35,15 +35,6 @@ async def async_setup_entry(hass, entry, async_add_devices):
 class WallboxModbusBinarySensor(WallboxModbusEntity, BinarySensorEntity):
     """wallbox_modbus binary_sensor class."""
 
-    def __init__(
-        self,
-        coordinator: WallboxModbusDataUpdateCoordinator,
-        entity_description: BinarySensorEntityDescription,
-    ) -> None:
-        """Initialize the binary_sensor class."""
-        super().__init__(coordinator)
-        self.entity_description = entity_description
-
     @property
     def is_on(self) -> bool:
         """Return true if the binary_sensor is on."""

@@ -32,16 +32,6 @@ async def async_setup_entry(hass, entry, async_add_devices):
 class WallboxModbusSwitch(WallboxModbusEntity, SwitchEntity):
     """wallbox_modbus switch class."""
 
-    def __init__(
-        self,
-        coordinator: WallboxModbusDataUpdateCoordinator,
-        entity_description: SwitchEntityDescription,
-    ) -> None:
-        """Initialize the switch class."""
-        super().__init__(coordinator)
-        self.entity_description = entity_description
-        self._unique_id = f"${self._unique_id}-{self.entity_description.key}"
-
     @property
     def is_on(self) -> bool:
         """Return true if the switch is on."""

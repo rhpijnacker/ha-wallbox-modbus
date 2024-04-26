@@ -29,16 +29,6 @@ async def async_setup_entry(hass, entry, async_add_devices):
 class WallboxModbusLock(WallboxModbusEntity, LockEntity):
     """wallbox_modbus Lock class."""
 
-    def __init__(
-        self,
-        coordinator: WallboxModbusDataUpdateCoordinator,
-        entity_description: LockEntityDescription,
-    ) -> None:
-        """Initialize the lock class."""
-        super().__init__(coordinator)
-        self.entity_description = entity_description
-        self._unique_id = f"{self._unique_id}-{self.entity_description.key}"
-
     @property
     def is_locked(self) -> bool:
         """Return the status of the lock."""

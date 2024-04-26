@@ -41,7 +41,7 @@ class WallboxModbusFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 _errors["base"] = "unknown"
             else:
                 return self.async_create_entry(
-                    title=f"Wallbox {data['part_number']}-{data['serial_number']}",
+                    title=f"Wallbox {data['serial_number']} [{data['part_number']}]",
                     data={
                         CONF_HOST: user_input[CONF_HOST],
                         CONF_PORT: user_input[CONF_PORT],
