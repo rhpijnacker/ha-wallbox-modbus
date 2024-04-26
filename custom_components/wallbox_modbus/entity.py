@@ -29,3 +29,6 @@ class WallboxModbusEntity(CoordinatorEntity):
         )
         self._attr_unique_id = f"{self._device_id}-{self.entity_description.key}"
         self.entity_id = f"wallbox_modbus.{data['serial_number']}_{self.entity_description.key}"
+
+    def has_control(self) -> bool:
+        return self.coordinator.data['control'] == 'remote'

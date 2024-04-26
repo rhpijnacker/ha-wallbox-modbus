@@ -69,6 +69,10 @@ ENTITY_DESCRIPTIONS = (
         state_class=SensorStateClass.MEASUREMENT,
     ),
     SensorEntityDescription(
+        key="charger_state",
+        name="Charger state",
+    ),
+    SensorEntityDescription(
         key="state_of_charge",
         name="State of charge",
         native_unit_of_measurement=PERCENTAGE,

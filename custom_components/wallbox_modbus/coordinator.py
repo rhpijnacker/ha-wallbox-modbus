@@ -25,6 +25,7 @@ from .const import DOMAIN, LOGGER
 class WallboxModbusDataUpdateCoordinator(DataUpdateCoordinator):
     """Class to manage fetching data from the API."""
 
+    client: WallboxModbus
     config_entry: ConfigEntry
 
     def __init__(
