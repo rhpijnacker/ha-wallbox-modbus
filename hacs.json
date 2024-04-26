@@ -1,5 +1,5 @@
 {
-    "name": "Wallbox Modbus",
+    "name": "Wallbox via modbus",
     "filename": "wallbox_modbus.zip",
     "hide_default_branch": true,
     "homeassistant": "2023.8.0",

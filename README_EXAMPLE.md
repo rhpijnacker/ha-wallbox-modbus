@@ -17,7 +17,7 @@ _Integration to integrate with [wallbox_modbus][wallbox_modbus]._
 Platform | Description
 -- | --
 `binary_sensor` | Show something `True` or `False`.
-`sensor` | Show info from blueprint API.
+`sensor` | Show info from WallboxModbus API.
 `switch` | Switch something `True` or `False`.
 
 ## Installation

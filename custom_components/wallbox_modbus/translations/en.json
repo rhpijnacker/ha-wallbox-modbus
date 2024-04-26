@@ -14,5 +14,13 @@
             "connection": "Unable to connect to the server.",
             "unknown": "Unknown error occurred."
         }
+    },
+    "sensor": {
+        "max_available_current": {
+            "name": "Max available current"
+        },
+        "max_available_power": {
+            "name": "Max available power"
+        }
     }
 }
