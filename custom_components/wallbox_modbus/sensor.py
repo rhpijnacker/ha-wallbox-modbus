@@ -1,5 +1,4 @@
 """Sensor platform for wallbox_modbus."""
-from __future__ import annotations
 
 from homeassistant.components.sensor import SensorEntity, SensorEntityDescription
 from homeassistant.components.sensor import (
@@ -18,20 +17,6 @@ from .const import DOMAIN
 from .entity import WallboxModbusEntity
 
 ENTITY_DESCRIPTIONS = (
-    SensorEntityDescription(
-        key="current_setpoint",
-        name="Current setpoint",
-        native_unit_of_measurement=UnitOfElectricCurrent.AMPERE,
-        device_class=SensorDeviceClass.CURRENT,
-        state_class=SensorStateClass.MEASUREMENT,
-    ),
-    SensorEntityDescription(
-        key="power_setpoint",
-        name="Power setpoint",
-        native_unit_of_measurement=UnitOfPower.WATT,
-        device_class=SensorDeviceClass.POWER,
-        state_class=SensorStateClass.MEASUREMENT,
-    ),
     SensorEntityDescription(
         key="max_available_current",
         name="Max available current",
