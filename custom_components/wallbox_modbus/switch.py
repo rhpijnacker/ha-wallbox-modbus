@@ -5,7 +5,6 @@ from __future__ import annotations
 from homeassistant.components.switch import SwitchEntity, SwitchEntityDescription
 
 from .const import DOMAIN
-from .coordinator import WallboxModbusDataUpdateCoordinator
 from .entity import WallboxModbusEntity
 
 ENTITY_DESCRIPTIONS = (
@@ -31,6 +30,10 @@ async def async_setup_entry(hass, entry, async_add_devices):
 
 class WallboxModbusSwitch(WallboxModbusEntity, SwitchEntity):
     """wallbox_modbus switch class."""
+
+    @property
+    def available(self) -> bool:
+        return self.has_control()
 
     @property
     def is_on(self) -> bool:

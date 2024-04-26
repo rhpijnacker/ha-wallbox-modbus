@@ -15,7 +15,6 @@ from homeassistant.const import (
     UnitOfElectricPotential,
 )
 from .const import DOMAIN
-from .coordinator import WallboxModbusDataUpdateCoordinator
 from .entity import WallboxModbusEntity
 
 ENTITY_DESCRIPTIONS = (
