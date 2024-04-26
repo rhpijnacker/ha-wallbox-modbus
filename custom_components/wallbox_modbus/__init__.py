@@ -16,6 +16,7 @@ from .const import DOMAIN
 from .coordinator import WallboxModbusDataUpdateCoordinator
 
 PLATFORMS: list[Platform] = [
+    Platform.LOCK,
     Platform.SENSOR,
     # Platform.BINARY_SENSOR,
     Platform.SWITCH,
