@@ -64,7 +64,9 @@ class WallboxModbusChargeDischargeSwitch(WallboxModbusEntity, SwitchEntity):
 
     @property
     def is_on(self) -> bool:
-        return self.coordinator.data.get("action") == 1
+        return self.coordinator.data.get("charger_state") == "charging"
+
+    # States: "charging", "connected_not_charging", "no_car_connected", "connected_waiting_for_car_demand"
 
     async def async_turn_on(self, **_: any) -> None:
         await self.coordinator.client.start_charging_discharging()
