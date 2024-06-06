@@ -1,6 +1,9 @@
 """Switch platform for wallbox_modbus."""
 
 from homeassistant.components.switch import SwitchEntity, SwitchEntityDescription
+from homeassistant.helpers.entity import EntityDescription
+
+from custom_components.wallbox_modbus.coordinator import WallboxModbusDataUpdateCoordinator
 
 from .const import DOMAIN
 from .entity import WallboxModbusEntity
@@ -11,8 +14,13 @@ AutoChargingSwitchEntityDescription = SwitchEntityDescription(
     icon="mdi:battery-charging",
 )
 StartChargingSwitchEntityDescription = SwitchEntityDescription(
-    key="charge_discharge",
-    name="Start (dis)charging",
+    key="charge",
+    name="Start charging",
+    icon="mdi:battery-charging",
+)
+StartDischargingSwitchEntityDescription = SwitchEntityDescription(
+    key="discharge",
+    name="Start discharging",
     icon="mdi:battery-charging",
 )
 
@@ -25,9 +33,13 @@ async def async_setup_entry(hass, entry, async_add_devices):
             coordinator=coordinator,
             entity_description=AutoChargingSwitchEntityDescription,
         ),
-        WallboxModbusChargeDischargeSwitch(
+        WallboxModbusChargeSwitch(
             coordinator=coordinator,
             entity_description=StartChargingSwitchEntityDescription
+        ),
+        WallboxModbusDischargeSwitch(
+            coordinator=coordinator,
+            entity_description=StartDischargingSwitchEntityDescription
         ),
     ])
 
@@ -55,8 +67,12 @@ class WallboxModbusAutoChargingSwitch(WallboxModbusEntity, SwitchEntity):
         await self.coordinator.async_request_refresh()
 
 
-class WallboxModbusChargeDischargeSwitch(WallboxModbusEntity, SwitchEntity):
+class WallboxModbusChargeSwitch(WallboxModbusEntity, SwitchEntity):
     """wallbox_modbus switch class."""
+
+    def __init__(self, coordinator: WallboxModbusDataUpdateCoordinator, entity_description: EntityDescription) -> None:
+        super().__init__(coordinator, entity_description)
+        self.factor = 1
 
     @property
     def available(self) -> bool:
@@ -64,14 +80,34 @@ class WallboxModbusChargeDischargeSwitch(WallboxModbusEntity, SwitchEntity):
 
     @property
     def is_on(self) -> bool:
-        return self.coordinator.data.get("charger_state") == "charging"
+        state = self.coordinator.data.get("charger_state")
+        return state == "charging"
 
     # States: "charging", "connected_not_charging", "no_car_connected", "connected_waiting_for_car_demand"
 
     async def async_turn_on(self, **_: any) -> None:
+        if self.coordinator.data.get("setpoint_type") == "current":
+            setpoint = self.factor * abs(self.coordinator.data.get("current_setpoint"))
+            await self.coordinator.client.set_current_setpoint(setpoint)
+        else:
+            setpoint = self.factor * abs(self.coordinator.data.get("power_setpoint"))
+            await self.coordinator.client.set_power_setpoint(setpoint)
         await self.coordinator.client.start_charging_discharging()
         await self.coordinator.async_request_refresh()
 
     async def async_turn_off(self, **_: any) -> None:
         await self.coordinator.client.stop_charging_discharging()
         await self.coordinator.async_request_refresh()
+
+
+class WallboxModbusDischargeSwitch(WallboxModbusChargeSwitch):
+    """wallbox_modbus switch class."""
+
+    def __init__(self, coordinator: WallboxModbusDataUpdateCoordinator, entity_description: EntityDescription) -> None:
+        super().__init__(coordinator, entity_description)
+        self.factor = -1
+
+    @property
+    def is_on(self) -> bool:
+        state = self.coordinator.data.get("charger_state")
+        return state == "discharging"
