@@ -3,4 +3,4 @@ homeassistant==2023.8.0
 pip>=21.0,<24.1
 pymodbus==3.6.9
 ruff==0.4.1
-wallbox_modbus=0.0.1
+wallbox_modbus==0.0.1
