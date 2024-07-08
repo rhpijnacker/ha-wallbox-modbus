@@ -1,25 +1,34 @@
-"""BlueprintEntity class."""
+"""WallboxModbusEntity class."""
 from __future__ import annotations
 
-from homeassistant.helpers.entity import DeviceInfo
+from homeassistant.helpers.entity import DeviceInfo, EntityDescription
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import ATTRIBUTION, DOMAIN, NAME, VERSION
-from .coordinator import BlueprintDataUpdateCoordinator
+from .const import DOMAIN, NAME, VERSION
+from .coordinator import WallboxModbusDataUpdateCoordinator
 
 
-class IntegrationBlueprintEntity(CoordinatorEntity):
-    """BlueprintEntity class."""
+class WallboxModbusEntity(CoordinatorEntity):
+    """WallboxModbusEntity class."""
 
-    _attr_attribution = ATTRIBUTION
-
-    def __init__(self, coordinator: BlueprintDataUpdateCoordinator) -> None:
+    def __init__(
+        self,
+        coordinator: WallboxModbusDataUpdateCoordinator,
+        entity_description: EntityDescription
+    ) -> None:
         """Initialize."""
         super().__init__(coordinator)
-        self._attr_unique_id = coordinator.config_entry.entry_id
+        self.entity_description = entity_description
+        data = coordinator.config_entry.data
+        self._device_id = f"{data['part_number']}-{data['serial_number']}"
         self._attr_device_info = DeviceInfo(
-            identifiers={(DOMAIN, self.unique_id)},
+            identifiers={(DOMAIN, self._device_id)},
             name=NAME,
             model=VERSION,
-            manufacturer=NAME,
+            manufacturer="Wallbox",
         )
+        self._attr_unique_id = f"{self._device_id}-{self.entity_description.key}"
+        self.entity_id = f"wallbox_modbus.{data['serial_number']}_{self.entity_description.key}"
+
+    def has_control(self) -> bool:
+        return self.coordinator.data['control'] == 'remote'
