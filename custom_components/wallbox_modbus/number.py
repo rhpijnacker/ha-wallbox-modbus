@@ -7,10 +7,8 @@ from homeassistant.components.number import (
     NumberMode,
 )
 from homeassistant.const import (
-    PERCENTAGE,
     UnitOfElectricCurrent,
     UnitOfPower,
-    UnitOfElectricPotential,
 )
 from .const import DOMAIN
 from .entity import WallboxModbusEntity

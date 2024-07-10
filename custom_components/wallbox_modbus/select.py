@@ -35,7 +35,6 @@ class WallboxModbusSetpointSelect(WallboxModbusEntity, SelectEntity):
 
     @property
     def current_option(self) -> str | None:
-        print('current_option', self.coordinator.data[self.entity_description.key].capitalize())
         return self.coordinator.data[self.entity_description.key].capitalize()
 
     async def async_select_option(self, option: str) -> None:

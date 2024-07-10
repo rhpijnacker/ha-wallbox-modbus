@@ -1,23 +1,16 @@
 """DataUpdateCoordinator for wallbox_modbus."""
 from __future__ import annotations
 
-import asyncio
 from datetime import timedelta
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import (
     DataUpdateCoordinator,
-    UpdateFailed,
 )
-from homeassistant.exceptions import ConfigEntryAuthFailed
 
 from wallbox_modbus import WallboxModbus
 
-from .api import (
-    WallboxModbusApiClientAuthenticationError,
-    WallboxModbusApiClientError,
-)
 from .const import DOMAIN, LOGGER
 
 
@@ -44,12 +37,7 @@ class WallboxModbusDataUpdateCoordinator(DataUpdateCoordinator):
 
     async def _async_update_data(self):
         """Update data via library."""
-        try:
-            await self.client.connect()
-            data = await self.client.get_all_values()
-            print(data)
-            return data
-        except WallboxModbusApiClientAuthenticationError as exception:
-            raise ConfigEntryAuthFailed(exception) from exception
-        except WallboxModbusApiClientError as exception:
-            raise UpdateFailed(exception) from exception
+        await self.client.connect()
+        data = await self.client.get_all_values()
+        # print(data)
+        return data

@@ -8,7 +8,6 @@ from homeassistant.components.binary_sensor import (
 )
 
 from .const import DOMAIN
-from .coordinator import WallboxModbusDataUpdateCoordinator
 from .entity import WallboxModbusEntity
 
 ENTITY_DESCRIPTIONS = (

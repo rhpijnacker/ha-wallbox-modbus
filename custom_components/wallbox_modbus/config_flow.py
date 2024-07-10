@@ -6,13 +6,7 @@ from homeassistant import config_entries
 from homeassistant.const import CONF_HOST, CONF_PORT
 from homeassistant.helpers import selector
 
-from .api import (
-    WallboxModbusApiClient,
-    WallboxModbusApiClientAuthenticationError,
-    WallboxModbusApiClientCommunicationError,
-    WallboxModbusApiClientError,
-)
-from .const import DOMAIN, LOGGER
+from .const import DOMAIN
 
 import wallbox_modbus
 
@@ -28,27 +22,19 @@ class WallboxModbusFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         """Handle a flow initialized by the user."""
         _errors = {}
         if user_input is not None:
-            try:
-                data = await self._connect_to_wallbox(
-                    host=user_input[CONF_HOST],
-                    port=user_input[CONF_PORT],
-                )
-            except WallboxModbusApiClientCommunicationError as exception:
-                LOGGER.error(exception)
-                _errors["base"] = "connection"
-            except WallboxModbusApiClientError as exception:
-                LOGGER.exception(exception)
-                _errors["base"] = "unknown"
-            else:
-                return self.async_create_entry(
-                    title=f"Wallbox {data['serial_number']} [{data['part_number']}]",
-                    data={
-                        CONF_HOST: user_input[CONF_HOST],
-                        CONF_PORT: user_input[CONF_PORT],
-                        'serial_number': data['serial_number'],
-                        'part_number': data['part_number'],
-                    }
-                )
+            data = await self._connect_to_wallbox(
+                host=user_input[CONF_HOST],
+                port=user_input[CONF_PORT],
+            )
+            return self.async_create_entry(
+                title=f"Wallbox {data['serial_number']} [{data['part_number']}]",
+                data={
+                    CONF_HOST: user_input[CONF_HOST],
+                    CONF_PORT: user_input[CONF_PORT],
+                    'serial_number': data['serial_number'],
+                    'part_number': data['part_number'],
+                }
+            )
 
         return self.async_show_form(
             step_id="user",
@@ -76,7 +62,7 @@ class WallboxModbusFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
         )
 
     async def _connect_to_wallbox(self, host: str, port: str) -> None:
-        """ Validate connection details. """
+        """Validate connection details."""
         client = wallbox_modbus.WallboxModbus(host=host, port=port)
         await client.connect()
         return await client.get_all_values()
