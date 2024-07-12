@@ -41,3 +41,8 @@ class WallboxModbusDataUpdateCoordinator(DataUpdateCoordinator):
         data = await self.client.get_all_values()
         # print(data)
         return data
+
+    async def async_shutdown(self) -> None:
+        """Run shutdown clean up."""
+        self.client.close()
+        await super().async_shutdown()
