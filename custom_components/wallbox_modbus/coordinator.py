@@ -38,9 +38,9 @@ class WallboxModbusDataUpdateCoordinator(DataUpdateCoordinator):
     async def _async_update_data(self):
         """Update data via library."""
         await self.client.connect()
-        data = await self.client.get_all_values()
-        # print(data)
-        return data
+        self.data = await self.client.get_all_values()
+        #print(self.data)
+        return self.data
 
     async def async_shutdown(self) -> None:
         """Run shutdown clean up."""
