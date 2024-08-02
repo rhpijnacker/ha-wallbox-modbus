@@ -53,6 +53,7 @@ ENTITY_DESCRIPTIONS = (
     SensorEntityDescription(
         key="charger_state",
         name="Charger state",
+        translation_key="charger_state",
     ),
     SensorEntityDescription(
         key="state_of_charge",

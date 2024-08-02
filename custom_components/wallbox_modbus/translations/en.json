@@ -15,12 +15,17 @@
             "unknown": "Unknown error occurred."
         }
     },
-    "sensor": {
-        "max_available_current": {
-            "name": "Max available current"
-        },
-        "max_available_power": {
-            "name": "Max available power"
+    "entity": {
+        "sensor": {
+            "charger_state": {
+                "state": {
+                    "charging": "Charging",
+                    "connected_not_charging": "Connected",
+                    "connected_waiting_for_car_demand": "Connected (waiting)",
+                    "discharging": "Discharging",
+                    "no_car_connected": "Disconnected"
+                }
+            }
         }
     }
 }
