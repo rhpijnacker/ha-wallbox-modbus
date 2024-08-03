@@ -2,7 +2,7 @@
     "name": "Wallbox via modbus",
     "filename": "wallbox_modbus.zip",
     "hide_default_branch": true,
-    "homeassistant": "2023.8.0",
+    "homeassistant": "2024.7.4",
     "render_readme": true,
     "zip_release": true
 }
