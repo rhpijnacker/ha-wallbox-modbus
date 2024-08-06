@@ -64,6 +64,7 @@ ENTITY_DESCRIPTIONS = (
     ),
 )
 
+
 async def async_setup_entry(hass, entry, async_add_devices):
     """Set up the sensor platform."""
     coordinator = hass.data[DOMAIN][entry.entry_id]
@@ -79,7 +80,25 @@ async def async_setup_entry(hass, entry, async_add_devices):
 class WallboxModbusSensor(WallboxModbusEntity, SensorEntity):
     """wallbox_modbus Sensor class."""
 
+    def __init__(self, coordinator, entity_description) -> None:
+        super().__init__(coordinator, entity_description)
+        self._last_good_value = 0
+
+    def _is_state_of_charge(self) -> bool:
+        return self.entity_description.key == "state_of_charge"
+
+    @property
+    def assumed_state(self) -> bool:
+        """Return True if unable to access real state of the entity."""
+        return self._is_state_of_charge() and self.coordinator.data[self.entity_description.key] == 0
+
     @property
     def native_value(self) -> str:
         """Return the native value of the sensor."""
-        return self.coordinator.data[self.entity_description.key]
+        value = self.coordinator.data[self.entity_description.key]
+        if self._is_state_of_charge():
+            if value == 0:
+                value = self._last_good_value
+            else:
+                self._last_good_value = value
+        return value
